@@ -1,0 +1,28 @@
+<div id="info-container">
+  <div id="title-div">
+    <h1>
+      Insert your Geographical Info
+    </h1>
+    <app-header></app-header>
+  </div>
+
+  <div id='form-div'>
+    <section class="infoform cf">
+      <form name="info-first" action="index_submit" method="get" accept-charset="utf-8">
+        <ul>
+          <li><label>What's your country?</label>
+          <input type="all" name="country" [(ngModel)]="userService.user.country"></li>
+          <li><label>The city where you live in</label>
+          <input type="all" name="city"  [(ngModel)]="userService.user.city"></li>
+          <li><label>Your Address</label>
+          <input type="all" name="address"  [(ngModel)]="userService.user.address"></li>
+        </ul>
+      </form>
+    </section>
+  </div>
+  <div id="foot-btn-div">
+    <a (click)="saveInfo()" routerLink="/app-info-form-first" class="act-btn button-reverse big-btn" value="back">BACK</a>
+    <a (click)="saveInfo()" routerLink="/app-info-form-third" class="act-btn button big-btn" value="add">NEXT PAGE</a>
+  </div>
+
+</div>
