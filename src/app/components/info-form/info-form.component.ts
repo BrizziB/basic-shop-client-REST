@@ -8,23 +8,34 @@ import { LocalStorageService } from '../../services/local/local.storage.service'
 
 @Component({
   selector: 'app-info-form',
-  template: '',
-  styleUrls: ['./info-form.component.css']
+  template: ''
 })
 export class InfoFormComponent implements OnInit {
 
+  /**************************************************************************************************************
+  | Questo componente rappresenta il generico componente di inserimento informazioni (non ha un template html)  *
+  | implementa funzionalità per salvare e caricare le info sia da localStorage che da server remoto             *
+  | essendo questa una versione puramente REST del client si è ricreato il funzionamento dello scope di         *
+  | conversazione di CDI, lo stato della conversazione viene mantenuto su localStorage e sincronizzato solo     *
+  | alla fine (quando si torna alla home page)                                                                  *
+  | le funzionalità implementate qui sono riprese dai 3 componenti di inserimento informazioni utente           *
+  |                                                                                                             *
+  ***************************************************************************************************************/
+
   constructor(
-    protected userService: UserService,
-    protected localStorageService: LocalStorageService,
+    protected  userService: UserService,
     protected router: Router ) {
 
   }
+
+  stringUser: string;
+
   saveInfo(): void {
     /* ogni volta che si cambia pagina fra quelle di inserimento info
        salvo tutto lo user sul bean di conversazione del server
     */
     console.log('salvataggio conversazione');
-    const body = JSON.stringify({
+    this.stringUser = JSON.stringify({
 
       firstname: this.userService.user.firstname,
       secondname: this.userService.user.secondname,
@@ -37,89 +48,33 @@ export class InfoFormComponent implements OnInit {
       favTvShow: this.userService.user.favTvShow
 
     });
-    this.userService.updateConversation(body).subscribe(
-      (resp) => {
-        if (!isNullOrUndefined(resp)) {
-          console.log('utente aggiornato');
-        }
-      }
-    );
+    this.userService.updateConversation(this.stringUser);
+    console.log('utente aggiornato');
+
   }
 
   closeInfoAndSave() {
-    /* quando si esce dalle pagine di inserimento info salvo l'utente
-      sulla conversazione remota come in saveInfo();
-      dopo però richiamo endConversation(), che termina la conversazione
-      ponendo a null il cid e terminando il ciclo di vita del relativo bean
-      Inoltre lo user conservato sul bean viene persistito sul DB
+    /* si salva su local storage, in modo da ripristinare tutto in caso di refresh della pagina
     */
     this.saveInfo();
-    this.userService.endConversation().subscribe(
-      (resp) => {
-        if (! isNullOrUndefined(resp.body)) {
-          this.localStorageService.deleteConversation();
-          this.router.navigate(['/app-home']);
-          console.log('conversazione chiusa');
-        }
+    this.userService.updateUser(this.stringUser).subscribe(
+      (user) => {
+        console.log('remote user updated');
       }
     );
+    this.userService.endConversation();
+    this.router.navigate(['/app-home']);
+    console.log('conversazione chiusa');
   }
 
 
   protected initUser() {
-    /* inizializzo l'utente locale con quello remoto persistito sul server
-
+    /* inizializzo l'utente locale con quello remoto persistito su local storage
     */
-    if (! isNullOrUndefined(this.userService.user.id)) {
-      return true;
-    }
-    this.userService.getUserInfo().subscribe( // richiede i dati completi dell'utente - eseguito sempre
-    (resp) => {
-      if (! isNullOrUndefined(resp.body)) {
-        this.userService.user = resp.body;
-        }
-      }
-    );
+    this.userService.getUserInfo();
   }
 
-  ngOnInit() { // controlla conversazione e inizializza user da server
-    let cid = this.userService.getCid();
-    if (isNullOrUndefined(cid)) {
-      // caso in cui o si deve aprire una conversazione nuova
-      // o si è fatto refresh e si deve ripristinare una vecchia
-      if (isNullOrUndefined(this.localStorageService.loadConversation())) {
-        // in questo caso siamo sicuri che non c'è nessuna conversazione da ripristinare => se ne apre una nuova
-        this.userService.startInformationConversation().subscribe(
-          (resp) => {
-            cid = (Number)(resp.body); // avrei potuto specificare il tipo di response
-            if (! isNullOrUndefined(cid)) {
-              this.userService.setCid((Number)(cid));
-              this.localStorageService.registerConversation(cid);
-              this.initUser();
-              console.log('new conversation established, with cid: ' + cid);
-            }
-          });
-      } else {
-        // c'è una conversazione da ripristinare,
-        // si verifica che sia ancora in vita sul server ed in tal caso si ripristina
-        cid = (Number)(this.localStorageService.loadConversation());
-        this.userService.setCid((Number)(cid));
-        this.userService.convCheck().subscribe(
-          (resp) => {
-            if (resp.body !== true) { // conversazione scaduta sul server, quindi si cancella anche sul client e se ne apre una nuova
-              this.localStorageService.deleteConversation();
-              this.userService.setCid(null);
-              console.log('conversation time-out');
-              this.router.navigate(['/app-home']);
-            } else {
-              console.log('restored conversation, with cid: ' + cid);
-              this.initUser();
-            }
-          }
-        );
-        }
-    } else {
-      this.initUser();
-    }
+  ngOnInit() {
+    this.initUser();
   }
 }

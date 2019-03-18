@@ -17,6 +17,8 @@ export class ProductsService {
 
     /*****************************************************************************
       gli errori nelle response non vengono gestiti - per semplicità
+
+      unica responsabilità della classe è richiedere al server la lista prodotti
     ******************************************************************************/
 
 

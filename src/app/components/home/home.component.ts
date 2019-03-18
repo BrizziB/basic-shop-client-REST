@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Product } from '../../model/Product';
 import { ProductsService } from '../../services/product.service';
 import { HttpResponse } from '@angular/common/http';
-import { LocalComponentsService } from '../../services/local/local.components.service';
 import { OrderService } from '../../services/order.service';
 import { AuthGuardService } from '../../services/auth-guard.service';
 import { User } from '../../model/User';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-home',
@@ -14,10 +14,17 @@ import { User } from '../../model/User';
 })
 export class HomeComponent implements OnInit {
 
+  /**************************************************************************************************************
+  | Questo componente funziona da home: mostra gli oggetti in vendita e ne permette l'aggiunta all'ordinazione, *
+  | permette di spostarsi sulla pagina dell'ordinazione dell'utente,                                            *
+  | permette poi di aprire la pagina di inserimento informazioni e quella di revisione delle informazioni       *
+  |                                                                                                             *
+  ***************************************************************************************************************/
+
   constructor(
     protected productService: ProductsService,
     protected orderService: OrderService,
-    protected localComponentService: LocalComponentsService,
+    protected userService: UserService,
     protected authService: AuthGuardService
   ) { }
 
@@ -34,12 +41,11 @@ export class HomeComponent implements OnInit {
       })
     );
   }
-
   addToOrder(prod: Product): void {
     const body = JSON.stringify({
       id: prod.id
     });
-    this.orderService.addProductToOrderStateful(body).subscribe(
+    this.orderService.addProductToOrderStateless(body).subscribe(
       (resp) => {
         if (resp.body === true) {
           console.log('product with ID ' + prod.id + 'added to order');

@@ -16,9 +16,8 @@ export class InfoFormFirstComponent extends InfoFormComponent implements OnInit 
 
   constructor(
     protected userService: UserService,
-    protected localStorageService: LocalStorageService,
     protected router: Router ) {
-    super(userService, localStorageService, router);
+    super(userService, router);
   }
 
 
