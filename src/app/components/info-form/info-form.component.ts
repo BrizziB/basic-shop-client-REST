@@ -18,7 +18,7 @@ export class InfoFormComponent implements OnInit {
   | essendo questa una versione puramente REST del client si è ricreato il funzionamento dello scope di         *
   | conversazione di CDI, lo stato della conversazione viene mantenuto su localStorage e sincronizzato solo     *
   | alla fine (quando si torna alla home page)                                                                  *
-  | le funzionalità implementate qui sono riprese dai 3 componenti di inserimento informazioni utente           *
+  | le funzionalità implementate qui sono usate dai 3 componenti di inserimento informazioni utente             *
   |                                                                                                             *
   ***************************************************************************************************************/
 

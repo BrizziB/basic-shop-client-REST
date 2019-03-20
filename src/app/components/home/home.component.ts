@@ -32,8 +32,9 @@ export class HomeComponent implements OnInit {
   user: User;
 
   ngOnInit() {
+      // l'inizializzazione del componente consiste nel caricare l'utente e richiedere al server la lista dei prodotti
     this.user = this.authService.getLoggedUser();
-    this.productService.getProducts().subscribe(
+    this.productService.getProducts().subscribe( // restituisce la lista dei prodotti dello shop
       ((resp: HttpResponse<Product[]>) => {
         if (resp !== null) {
           this.products = resp.body;
@@ -42,10 +43,11 @@ export class HomeComponent implements OnInit {
     );
   }
   addToOrder(prod: Product): void {
+     // aggiunge il prodotto prod all'ordine dello user (l'ordine è unico per ogni user)
     const body = JSON.stringify({
       id: prod.id
     });
-    this.orderService.addProductToOrderStateless(body).subscribe(
+    this.orderService.addProductToOrderStateless(body).subscribe( // aggiunge il prodotto a remoto e restituisce true se tutto ha funzionato
       (resp) => {
         if (resp.body === true) {
           console.log('product with ID ' + prod.id + 'added to order');

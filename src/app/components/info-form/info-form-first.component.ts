@@ -20,5 +20,7 @@ export class InfoFormFirstComponent extends InfoFormComponent implements OnInit 
     super(userService, router);
   }
 
+    // la prima pagina di inserimento informazioni; come per le altre due, conta solo l'html al fine di distinguerle
+
 
 }

@@ -18,7 +18,7 @@ export class OrderService{
     /*****************************************************************************
       gli errori nelle response non vengono gestiti - per semplicità
 
-      nei metodi che richiedono lo userID, ho fatto in modo che lo richiamano da userService
+      nei metodi che richiedono lo userID, ho fatto in modo che lo richiamino da userService
       questo comporta che prima richiamino una funzione di inizializione di userService
       tale funzione inizializza nuovamente l'attributo userID in caso sia avvenuto un refresh
       nel caso non sia presente alcun userID nel localStorage si viene reindirizzati al login

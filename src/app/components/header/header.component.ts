@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthGuardService } from '../../services/auth-guard.service';
 import { Router } from '@angular/router';
-import { BaseComponent } from '../app/base.components';
 import { UserService } from '../../services/user.service';
 import { LocalStorageService } from '../../services/local/local.storage.service';
 
@@ -12,7 +11,7 @@ import { LocalStorageService } from '../../services/local/local.storage.service'
 })
 export class HeaderComponent implements OnInit {
 
-  // ha la sola funzionalit di logout
+  // ha la sola funzionalità di logout
   // questa funzionalità richiede l'utilizzo di UserService, AuthService e localStorageService
   // come scritto anche in order.component non trovo eccezionale dover usare tre servizi in un
   // solo metodo, quindi potrebbe essere una buona idea accorpare queste funzionalità - cfr

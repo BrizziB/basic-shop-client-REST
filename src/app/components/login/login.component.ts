@@ -7,7 +7,6 @@ import { AuthGuardService } from '../../services/auth-guard.service';
 import { UserService } from '../../services/user.service';
 
 import { LocalStorageService } from '../../services/local/local.storage.service';
-import { BaseComponent } from '../app/base.components';
 
 @Component({
   selector: 'app-login',
